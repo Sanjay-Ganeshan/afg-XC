@@ -8,4 +8,6 @@
     <string name="title_activity_second">SecondActivity</string>
 
     <string name="GenerateRoute">Generate Route</string>
+    <string name="TextBox1">Enter Distance</string>
+    <string name="TextBox2">Generate Route</string>
 </resources>
