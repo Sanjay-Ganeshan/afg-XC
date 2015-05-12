@@ -1,24 +1,33 @@
 package com.example.sanjay.appsforgoodfirst;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        zoomToCurrentLocation();
+        buildGoogleApiClient();
+
     }
 
     @Override
@@ -67,7 +76,59 @@ public class MapsActivity extends FragmentActivity {
         mMap.setMyLocationEnabled(true);
     }
     private void zoomToCurrentLocation() {
+        try {
+            double lat = mLastLocation.getLatitude();
+            double lng = mLastLocation.getLongitude();
 
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
+        }
+        catch(Exception e) {
 
+        }
+
+    }
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+       //Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+       //startActivity(intent);
+       System.out.println("OnConnected");
+       if(mLastLocation != null) {
+           zoomToCurrentLocation();
+       }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        System.out.println("OnSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+        //startActivity(intent);
+        System.out.println("OnConnectionFailed");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mGoogleApiClient.isConnected())
+            mGoogleApiClient.disconnect();
     }
 }
