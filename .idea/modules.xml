@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AppsForGoodFirst.iml" filepath="$PROJECT_DIR$/AppsForGoodFirst.iml" />
+      <module fileurl="file://$PROJECT_DIR$/afg-XC.iml" filepath="$PROJECT_DIR$/afg-XC.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
