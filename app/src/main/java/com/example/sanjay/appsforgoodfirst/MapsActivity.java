@@ -1,24 +1,35 @@
 package com.example.sanjay.appsforgoodfirst;
 
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private GoogleApiClient mGoogleApiClient;
+    private Location mCurrLocation;
+    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        zoomToCurrentLocation();
+        buildGoogleApiClient();
+
     }
 
     @Override
@@ -67,7 +78,93 @@ public class MapsActivity extends FragmentActivity {
         mMap.setMyLocationEnabled(true);
     }
     private void zoomToCurrentLocation() {
+        try {
+            double lat = mCurrLocation.getLatitude();
+            double lng = mCurrLocation.getLongitude();
 
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 20));
+        }
+        catch(Exception e) {
 
+        }
+
+    }
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        createLocationRequest();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mCurrLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+       //Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+       //startActivity(intent);
+       System.out.println("OnConnected");
+       if(mCurrLocation != null) {
+           zoomToCurrentLocation();
+       }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        System.out.println("OnSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+        //startActivity(intent);
+        System.out.println("OnConnectionFailed");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mGoogleApiClient.isConnected())
+            mGoogleApiClient.disconnect();
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(500);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrLocation = location;
+        if (mCurrLocation != null)
+            zoomToCurrentLocation();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        System.out.println("OnStatusChanged");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        System.out.println("OnProviderEnabled");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        System.out.println("OnProviderDisabled");
     }
 }
