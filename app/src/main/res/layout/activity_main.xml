@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="eduawhitehead.wpi.users.afggui.MainActivity"
+    android:id="@+id/mylayout"
+    android:background="#821e1e1e">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/TextBox1"
+        android:id="@+id/TextBox1"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/GenRteButton"
+        android:layout_alignStart="@+id/GenRteButton"
+        android:layout_marginTop="47dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/inputText"
+        android:background="#90d5d5d5"
+        android:layout_below="@+id/TextBox1"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TextBox2"
+        android:id="@+id/GenRteButton"
+        android:layout_marginTop="139dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/inputText" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch1"
+        android:showText="true"
+        android:singleLine="false"
+        android:splitTrack="false"
+        android:checked="false"
+        android:textOff="MI"
+        android:textOn="KM"
+        android:layout_below="@+id/inputText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp" />
+
+</RelativeLayout>
