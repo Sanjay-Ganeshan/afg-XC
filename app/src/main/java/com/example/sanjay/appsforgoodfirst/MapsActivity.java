@@ -167,4 +167,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     public void onProviderDisabled(String provider) {
         System.out.println("OnProviderDisabled");
     }
+
+    
 }
